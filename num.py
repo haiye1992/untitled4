@@ -44,4 +44,5 @@ arr2=arr3**2
 arr6=numpy.eye(3)
 
 test=pd.Series([1,2,1,2,3,4,2,3])
-dad=pd.cut(test,4)
+dad=numpy.equal(test,2)
+

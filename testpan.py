@@ -6,6 +6,7 @@ from sklearn import preprocessing
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import GradientBoostingClassifier
 
 
 haha=pd.Series([3,5,6,88,3,54])
@@ -19,7 +20,6 @@ continuous_column_list = ['Age', 'SibSp', 'Fare', 'Parch']
 decrete_column_list = ['Sex', 'Pclass', 'Embarked']
 cont_train_data=train_data.filter(continuous_column_list)
 det_train_data=train_data.filter(decrete_column_list)
-cont_train_data.describe()
 print ("Parch:", chi2(train_data.filter(["Parch"]), train_data['Survived']))
 print ("SibSp:", chi2(train_data.filter(["SibSp"]), train_data['Survived']))
 
@@ -35,6 +35,7 @@ plt.xlabel(feature)
 plt.ylabel(u'Number of people')
 plt.show()
 feature_data.groupby(feature).hist()
+
 
 
 for colnum in det_train_data:
@@ -53,9 +54,8 @@ def print_value(features):
 print_value('Pclass')
 
 pre_data=train_data.copy()  #type: pd.DataFrame
-mean=pre_data.mean(axis=0,skipna=True)
-age=mean['Age']
-pre_data.loc[np.isnan(train_data['Age']),'Age']= age
+mean=pre_data.mean(axis=0,skipna=True)      #沿着列的方向求每一列的均值，也就是每一个属性额均值
+#pre_data['Age'].fillna(pre_data['Age'].median(),inplace=True)
 pre_data['Age'].fillna(pre_data['Age'].median(),inplace=True)
 #pre_data.fillna({'Age':0},inplace=True)
 #pre_data.loc[pre_data['Cabin'].notnull, 'Cabin']= 1
@@ -104,6 +104,7 @@ Fare=dummmy_test['Fare'].mean(skipna=True)
 dummmy_test.loc[pd.isnull(dummmy_test['Fare']),'Fare']= Fare
 dummmy_test['Fare']=preprocessing.minmax_scale(dummmy_test['Fare'])
 dummmy_test.drop(['PassengerId','Name','Ticket'],axis=1, inplace=True)
+plt.hist(x=[pre_data[pre_data['Survived']==1]['Age'],pre_data[pre_data['Survived']==0]['Age']],stacked=True,color=['g','r'],label=['Survived','dead'])
 
 testdata_after=dummmy_test.values
 res=clf.predict(testdata_after)   #type: np.ndarray
@@ -113,8 +114,11 @@ comp=gender.values
 comp=comp[:,1]
 enen=abs(comp-res)
 accuracy=1-sum(abs(comp-res))/res.size
+gbdt=GradientBoostingClassifier(n_estimators=100,max_depth=5).fit(haha,predict_data)
 
 xtrain,xtest,ytrain,ytest=train_test_split(haha,predict_data,test_size=0.4,random_state=0)
 scores=cross_val_score(clf,haha,predict_data,cv=5)
+
+
 
 
