@@ -1,8 +1,9 @@
 import numpy as np
 
 #朴素的贝叶斯法的学习和分类/多项式模型
+#需要用到平滑参数来处理原数据中不存在的数据值
 #其实就是极大似然的理论
-#还可以用高斯模型来做，把每个符合某一标签的
+#还可以用高斯模型来做，把每个符合某一标签的某一个特征看成高斯分布
 
 class naive_bayes(object):
     def __init__(self,alpha=1.0,label_prior=None):
